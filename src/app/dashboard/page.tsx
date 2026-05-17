@@ -6,43 +6,67 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import {
+  demoListings,
+  getDemoProfile,
+  getDemoPublicProfileMap,
+  getDemoRoomsForUser
+} from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
-import type { PublicProfile } from "@/types/database";
+import type { Listing, Profile, PublicProfile } from "@/types/database";
 
 export default async function DashboardPage() {
   const user = await requireConfirmedUser();
-  const supabase = await createClient();
+  let profile: Profile | null = null;
+  let myListings: Listing[] = [];
+  let messageCount = 0;
+  let latestListings: Listing[] = [];
+  let sellerMap = new Map<string, PublicProfile>();
 
-  const [
-    { data: profile },
-    { data: myListings },
-    { count: messageCount },
-    { data: latestListings }
-  ] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", user.id).single(),
-    supabase
-      .from("listings")
-      .select("*")
-      .eq("seller_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(3),
-    supabase
-      .from("chat_rooms")
-      .select("id", { count: "exact", head: true })
-      .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`),
-    supabase
-      .from("listings")
-      .select("*")
-      .eq("status", "available")
-      .order("created_at", { ascending: false })
-      .limit(4)
-  ]);
+  if (!hasSupabaseEnv()) {
+    profile = getDemoProfile(user.id);
+    myListings = demoListings.filter((listing) => listing.seller_id === user.id).slice(0, 3);
+    messageCount = getDemoRoomsForUser(user.id).length;
+    latestListings = demoListings.filter((listing) => listing.status === "available").slice(0, 4);
+    sellerMap = getDemoPublicProfileMap();
+  } else {
+    const supabase = await createClient();
+    const [
+      { data: profileData },
+      { data: myListingData },
+      { count: roomCount },
+      { data: latestListingData }
+    ] = await Promise.all([
+      supabase.from("profiles").select("*").eq("id", user.id).single(),
+      supabase
+        .from("listings")
+        .select("*")
+        .eq("seller_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(3),
+      supabase
+        .from("chat_rooms")
+        .select("id", { count: "exact", head: true })
+        .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`),
+      supabase
+        .from("listings")
+        .select("*")
+        .eq("status", "available")
+        .order("created_at", { ascending: false })
+        .limit(4)
+    ]);
 
-  const sellerIds = Array.from(new Set((latestListings ?? []).map((listing) => listing.seller_id)));
-  const { data: sellers } = sellerIds.length
-    ? await supabase.from("public_profiles").select("*").in("id", sellerIds)
-    : { data: [] as PublicProfile[] };
-  const sellerMap = new Map((sellers ?? []).map((seller) => [seller.id, seller]));
+    profile = profileData;
+    myListings = myListingData ?? [];
+    messageCount = roomCount ?? 0;
+    latestListings = latestListingData ?? [];
+    const sellerIds = Array.from(new Set(latestListings.map((listing) => listing.seller_id)));
+    const { data: sellers } = sellerIds.length
+      ? await supabase.from("public_profiles").select("*").in("id", sellerIds)
+      : { data: [] as PublicProfile[] };
+    sellerMap = new Map((sellers ?? []).map((seller) => [seller.id, seller]));
+  }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

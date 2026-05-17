@@ -29,11 +29,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = hasSupabaseEnv()
+  const demoMode = !hasSupabaseEnv();
+  const user = !demoMode
     ? await createClient()
         .then((supabase) => supabase.auth.getUser())
         .then(({ data }) => data.user)
-    : null;
+    : { id: "demo" };
+  const showInternalNav = Boolean(user);
 
   return (
     <html lang="en">
@@ -47,7 +49,7 @@ export default async function RootLayout({
               <span>UniBuySell</span>
             </Link>
             <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-              {user ? (
+              {showInternalNav ? (
                 <>
                   <Link href="/dashboard" className="hover:text-primary">
                     Dashboard
@@ -71,12 +73,18 @@ export default async function RootLayout({
               )}
             </nav>
             <div className="flex items-center gap-2">
-              {user ? (
-                <form action={signOutAction}>
-                  <Button variant="outline" size="sm" type="submit">
-                    Sign out
+              {showInternalNav ? (
+                demoMode ? (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/dashboard">Demo mode</Link>
                   </Button>
-                </form>
+                ) : (
+                  <form action={signOutAction}>
+                    <Button variant="outline" size="sm" type="submit">
+                      Sign out
+                    </Button>
+                  </form>
+                )
               ) : (
                 <>
                   <Button asChild variant="ghost" size="sm">

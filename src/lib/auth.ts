@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { demoCurrentUserId, getDemoProfile } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
 const publicEmailDomains = new Set([
@@ -66,6 +68,16 @@ export function deriveUniversityName(domain: string) {
 }
 
 export async function requireConfirmedUser() {
+  if (!hasSupabaseEnv()) {
+    const demoProfile = getDemoProfile(demoCurrentUserId);
+
+    return {
+      id: demoCurrentUserId,
+      email: demoProfile?.email ?? "demo@demo.edu",
+      email_confirmed_at: new Date().toISOString()
+    };
+  }
+
   const supabase = await createClient();
   const {
     data: { user }

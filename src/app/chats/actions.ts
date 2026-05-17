@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireConfirmedUser } from "@/lib/auth";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
 export type ReviewActionState = {
@@ -22,6 +23,11 @@ const reviewSchema = z.object({
 export async function completeSaleAction(formData: FormData) {
   const user = await requireConfirmedUser();
   const chatRoomId = String(formData.get("chatRoomId") ?? "");
+
+  if (!hasSupabaseEnv()) {
+    redirect(`/chats/${chatRoomId}`);
+  }
+
   const supabase = await createClient();
 
   const { data: room } = await supabase
@@ -65,6 +71,10 @@ export async function createReviewAction(
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check your review." };
+  }
+
+  if (!hasSupabaseEnv()) {
+    return { success: "Demo review submitted. Connect Supabase to persist real reviews." };
   }
 
   const supabase = await createClient();

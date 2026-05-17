@@ -12,17 +12,22 @@ type ChatRoomProps = {
   roomId: string;
   currentUserId: string;
   initialMessages: Message[];
+  demoMode?: boolean;
 };
 
-export function ChatRoom({ roomId, currentUserId, initialMessages }: ChatRoomProps) {
+export function ChatRoom({ roomId, currentUserId, initialMessages, demoMode = false }: ChatRoomProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useMemo(() => (demoMode ? null : createClient()), [demoMode]);
 
   useEffect(() => {
+    if (!supabase) {
+      return;
+    }
+
     const channel = supabase
       .channel(`chat-room:${roomId}`)
       .on(
@@ -62,7 +67,27 @@ export function ChatRoom({ roomId, currentUserId, initialMessages }: ChatRoomPro
 
     setError(null);
     setText("");
+    if (demoMode) {
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          chat_room_id: roomId,
+          sender_id: currentUserId,
+          text: nextText,
+          created_at: new Date().toISOString()
+        }
+      ]);
+      return;
+    }
+
     startTransition(async () => {
+      if (!supabase) {
+        setText(nextText);
+        setError("Supabase is not configured for live messaging.");
+        return;
+      }
+
       const { error: sendError } = await supabase.from("messages").insert({
         chat_room_id: roomId,
         sender_id: currentUserId,

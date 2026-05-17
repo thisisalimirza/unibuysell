@@ -4,34 +4,51 @@ import { MessageSquareLock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import {
+  getDemoListingMap,
+  getDemoPublicProfileMap,
+  getDemoRoomsForUser
+} from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
-import type { Listing, PublicProfile } from "@/types/database";
+import type { ChatRoom, Listing, PublicProfile } from "@/types/database";
 
 export default async function ChatsPage() {
   const user = await requireConfirmedUser();
-  const supabase = await createClient();
-  const { data: rooms } = await supabase
-    .from("chat_rooms")
-    .select("*")
-    .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`)
-    .order("created_at", { ascending: false });
+  let rooms: ChatRoom[] = [];
+  let listingMap = new Map<string, Listing>();
+  let profileMap = new Map<string, PublicProfile>();
 
-  const listingIds = Array.from(new Set((rooms ?? []).map((room) => room.listing_id)));
-  const participantIds = Array.from(
-    new Set((rooms ?? []).flatMap((room) => [room.buyer_id, room.seller_id]))
-  );
+  if (!hasSupabaseEnv()) {
+    rooms = getDemoRoomsForUser(user.id);
+    listingMap = getDemoListingMap();
+    profileMap = getDemoPublicProfileMap();
+  } else {
+    const supabase = await createClient();
+    const { data: roomData } = await supabase
+      .from("chat_rooms")
+      .select("*")
+      .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`)
+      .order("created_at", { ascending: false });
+    rooms = roomData ?? [];
 
-  const [{ data: listings }, { data: profiles }] = await Promise.all([
-    listingIds.length
-      ? supabase.from("listings").select("*").in("id", listingIds)
-      : Promise.resolve({ data: [] as Listing[] }),
-    participantIds.length
-      ? supabase.from("public_profiles").select("*").in("id", participantIds)
-      : Promise.resolve({ data: [] as PublicProfile[] })
-  ]);
+    const listingIds = Array.from(new Set(rooms.map((room) => room.listing_id)));
+    const participantIds = Array.from(
+      new Set(rooms.flatMap((room) => [room.buyer_id, room.seller_id]))
+    );
 
-  const listingMap = new Map((listings ?? []).map((listing) => [listing.id, listing]));
-  const profileMap = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+    const [{ data: listings }, { data: profiles }] = await Promise.all([
+      listingIds.length
+        ? supabase.from("listings").select("*").in("id", listingIds)
+        : Promise.resolve({ data: [] as Listing[] }),
+      participantIds.length
+        ? supabase.from("public_profiles").select("*").in("id", participantIds)
+        : Promise.resolve({ data: [] as PublicProfile[] })
+    ]);
+
+    listingMap = new Map((listings ?? []).map((listing) => [listing.id, listing]));
+    profileMap = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -47,7 +64,7 @@ export default async function ChatsPage() {
       </div>
 
       <div className="space-y-4">
-        {(rooms ?? []).map((room) => {
+        {rooms.map((room) => {
           const listing = listingMap.get(room.listing_id);
           const otherId = room.buyer_id === user.id ? room.seller_id : room.buyer_id;
           const other = profileMap.get(otherId);
@@ -73,7 +90,7 @@ export default async function ChatsPage() {
         })}
       </div>
 
-      {!rooms?.length ? (
+      {!rooms.length ? (
         <Card>
           <CardContent className="p-8 text-center text-slate-600">
             No secure chats yet. Start from a listing to contact a seller.

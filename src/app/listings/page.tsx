@@ -4,9 +4,11 @@ import { ListingCard } from "@/components/marketplace/listing-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import { demoListings, getDemoPublicProfileMap } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { listingCategories } from "@/lib/marketplace";
 import { createClient } from "@/lib/supabase/server";
-import type { ListingCategory, PublicProfile } from "@/types/database";
+import type { Listing, ListingCategory, PublicProfile } from "@/types/database";
 
 export default async function ListingsPage({
   searchParams
@@ -15,28 +17,44 @@ export default async function ListingsPage({
 }) {
   await requireConfirmedUser();
   const params = await searchParams;
-  const supabase = await createClient();
+  let listings: Listing[] = [];
+  let sellerMap = new Map<string, PublicProfile>();
+  let errorMessage: string | null = null;
 
-  let query = supabase
-    .from("listings")
-    .select("*")
-    .neq("status", "sold")
-    .order("created_at", { ascending: false });
+  if (!hasSupabaseEnv()) {
+    listings = demoListings
+      .filter((listing) => listing.status !== "sold")
+      .filter((listing) => !params.category || listing.category === params.category)
+      .filter(
+        (listing) =>
+          !params.q || listing.title.toLowerCase().includes(params.q.toLowerCase().trim())
+      );
+    sellerMap = getDemoPublicProfileMap();
+  } else {
+    const supabase = await createClient();
+    let query = supabase
+      .from("listings")
+      .select("*")
+      .neq("status", "sold")
+      .order("created_at", { ascending: false });
 
-  if (params.category && listingCategories.includes(params.category)) {
-    query = query.eq("category", params.category);
+    if (params.category && listingCategories.includes(params.category)) {
+      query = query.eq("category", params.category);
+    }
+
+    if (params.q) {
+      query = query.ilike("title", `%${params.q}%`);
+    }
+
+    const { data, error } = await query;
+    listings = data ?? [];
+    errorMessage = error?.message ?? null;
+    const sellerIds = Array.from(new Set(listings.map((listing) => listing.seller_id)));
+    const { data: sellers } = sellerIds.length
+      ? await supabase.from("public_profiles").select("*").in("id", sellerIds)
+      : { data: [] as PublicProfile[] };
+    sellerMap = new Map((sellers ?? []).map((seller) => [seller.id, seller]));
   }
-
-  if (params.q) {
-    query = query.ilike("title", `%${params.q}%`);
-  }
-
-  const { data: listings, error } = await query;
-  const sellerIds = Array.from(new Set((listings ?? []).map((listing) => listing.seller_id)));
-  const { data: sellers } = sellerIds.length
-    ? await supabase.from("public_profiles").select("*").in("id", sellerIds)
-    : { data: [] as PublicProfile[] };
-  const sellerMap = new Map((sellers ?? []).map((seller) => [seller.id, seller]));
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -75,19 +93,19 @@ export default async function ListingsPage({
         <Button type="submit">Filter</Button>
       </form>
 
-      {error ? (
+      {errorMessage ? (
         <Card className="mt-8">
-          <CardContent className="p-6 text-red-700">{error.message}</CardContent>
+          <CardContent className="p-6 text-red-700">{errorMessage}</CardContent>
         </Card>
       ) : null}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {(listings ?? []).map((listing) => (
+        {listings.map((listing) => (
           <ListingCard key={listing.id} listing={listing} seller={sellerMap.get(listing.seller_id)} />
         ))}
       </div>
 
-      {!listings?.length ? (
+      {!listings.length ? (
         <Card className="mt-8">
           <CardContent className="p-8 text-center text-slate-600">
             No matching listings yet. Be the first verified student to post one.

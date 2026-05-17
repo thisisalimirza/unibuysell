@@ -5,8 +5,11 @@ import { ListingCard } from "@/components/marketplace/listing-card";
 import { ProfileSummary } from "@/components/marketplace/profile-summary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import { demoReviews, getDemoListingsForSeller, getDemoPublicProfile } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
+import type { Listing, PublicProfile, Review } from "@/types/database";
 
 export default async function ProfilePage({
   params
@@ -15,23 +18,37 @@ export default async function ProfilePage({
 }) {
   await requireConfirmedUser();
   const { id } = await params;
-  const supabase = await createClient();
+  let profile: PublicProfile | null = null;
+  let listings: Listing[] = [];
+  let reviews: Review[] = [];
 
-  const [{ data: profile }, { data: listings }, { data: reviews }] = await Promise.all([
-    supabase.from("public_profiles").select("*").eq("id", id).single(),
-    supabase
-      .from("listings")
-      .select("*")
-      .eq("seller_id", id)
-      .eq("status", "available")
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("reviews")
-      .select("*")
-      .eq("reviewee_id", id)
-      .order("created_at", { ascending: false })
-      .limit(10)
-  ]);
+  if (!hasSupabaseEnv()) {
+    profile = getDemoPublicProfile(id);
+    listings = getDemoListingsForSeller(id).filter((listing) => listing.status === "available");
+    reviews = demoReviews.filter((review) => review.reviewee_id === id);
+  } else {
+    const supabase = await createClient();
+    const [{ data: profileData }, { data: listingData }, { data: reviewData }] =
+      await Promise.all([
+        supabase.from("public_profiles").select("*").eq("id", id).single(),
+        supabase
+          .from("listings")
+          .select("*")
+          .eq("seller_id", id)
+          .eq("status", "available")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("reviews")
+          .select("*")
+          .eq("reviewee_id", id)
+          .order("created_at", { ascending: false })
+          .limit(10)
+      ]);
+
+    profile = profileData;
+    listings = listingData ?? [];
+    reviews = reviewData ?? [];
+  }
 
   if (!profile) {
     notFound();
@@ -58,7 +75,7 @@ export default async function ProfilePage({
           <div>
             <h1 className="text-2xl font-bold text-slate-950">Active listings</h1>
             <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {(listings ?? []).map((listing) => (
+              {listings.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} seller={profile} />
               ))}
             </div>
@@ -69,7 +86,7 @@ export default async function ProfilePage({
               <CardTitle>Transaction reviews</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {(reviews ?? []).map((review) => (
+              {reviews.map((review) => (
                 <div key={review.id} className="border-b border-slate-100 pb-4 last:border-b-0">
                   <div className="flex items-center gap-1 text-amber-500">
                     {Array.from({ length: review.rating }).map((_, index) => (
@@ -80,7 +97,7 @@ export default async function ProfilePage({
                   <p className="mt-1 text-xs text-slate-400">{formatDate(review.created_at)}</p>
                 </div>
               ))}
-              {!reviews?.length ? (
+              {!reviews.length ? (
                 <p className="text-sm text-slate-500">No completed transaction reviews yet.</p>
               ) : null}
             </CardContent>

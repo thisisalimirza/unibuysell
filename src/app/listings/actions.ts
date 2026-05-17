@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireConfirmedUser } from "@/lib/auth";
+import { demoChatRooms, demoListings } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { dollarsToCents, listingSchema, parseImageUrls } from "@/lib/marketplace";
 import { createClient } from "@/lib/supabase/server";
 
@@ -21,6 +23,10 @@ export async function createListingAction(
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check your listing details." };
+  }
+
+  if (!hasSupabaseEnv()) {
+    redirect(`/listings/${demoListings[0].id}`);
   }
 
   const supabase = await createClient();
@@ -64,6 +70,10 @@ export async function updateListingAction(
     return { error: parsed.error.issues[0]?.message ?? "Check your listing details." };
   }
 
+  if (!hasSupabaseEnv()) {
+    redirect(`/listings/${listingId}`);
+  }
+
   const supabase = await createClient();
   const { error } = await supabase
     .from("listings")
@@ -96,6 +106,10 @@ export async function deleteListingAction(formData: FormData) {
     redirect("/listings");
   }
 
+  if (!hasSupabaseEnv()) {
+    redirect("/listings");
+  }
+
   const supabase = await createClient();
   await supabase.from("listings").delete().eq("id", listingId);
   revalidatePath("/listings");
@@ -106,6 +120,17 @@ export async function deleteListingAction(formData: FormData) {
 export async function createChatRoomAction(formData: FormData) {
   const user = await requireConfirmedUser();
   const listingId = String(formData.get("listingId") ?? "");
+
+  if (!hasSupabaseEnv()) {
+    const listing = demoListings.find((demoListing) => demoListing.id === listingId);
+    const room =
+      demoChatRooms.find(
+        (demoRoom) => demoRoom.listing_id === listingId && demoRoom.buyer_id === user.id
+      ) ?? demoChatRooms[0];
+
+    redirect(listing && listing.seller_id !== user.id ? `/chats/${room.id}` : `/listings/${listingId}`);
+  }
+
   const supabase = await createClient();
 
   const { data: listing, error: listingError } = await supabase

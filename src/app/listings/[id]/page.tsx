@@ -8,8 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import { getDemoListing, getDemoPublicProfile } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
+import type { Listing, PublicProfile } from "@/types/database";
 
 export default async function ListingDetailPage({
   params
@@ -18,19 +21,26 @@ export default async function ListingDetailPage({
 }) {
   const user = await requireConfirmedUser();
   const { id } = await params;
-  const supabase = await createClient();
+  let listing: Listing | null = null;
+  let seller: PublicProfile | null = null;
 
-  const { data: listing } = await supabase.from("listings").select("*").eq("id", id).single();
+  if (!hasSupabaseEnv()) {
+    listing = getDemoListing(id);
+    seller = listing ? getDemoPublicProfile(listing.seller_id) : null;
+  } else {
+    const supabase = await createClient();
+    const { data: listingData } = await supabase.from("listings").select("*").eq("id", id).single();
+    listing = listingData;
+    const { data: sellerData } = listing
+      ? await supabase.from("public_profiles").select("*").eq("id", listing.seller_id).single()
+      : { data: null };
+    seller = sellerData;
+  }
 
   if (!listing) {
     notFound();
   }
 
-  const { data: seller } = await supabase
-    .from("public_profiles")
-    .select("*")
-    .eq("id", listing.seller_id)
-    .single();
   const isOwner = user.id === listing.seller_id;
   const image = listing.images[0] ?? "/listing-placeholders/default.svg";
 

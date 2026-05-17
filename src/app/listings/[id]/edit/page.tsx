@@ -4,7 +4,10 @@ import { updateListingAction } from "@/app/listings/actions";
 import { ListingForm } from "@/components/marketplace/listing-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireConfirmedUser } from "@/lib/auth";
+import { getDemoListing } from "@/lib/demo-data";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
+import type { Listing } from "@/types/database";
 
 export default async function EditListingPage({
   params
@@ -13,8 +16,15 @@ export default async function EditListingPage({
 }) {
   const user = await requireConfirmedUser();
   const { id } = await params;
-  const supabase = await createClient();
-  const { data: listing } = await supabase.from("listings").select("*").eq("id", id).single();
+  let listing: Listing | null = null;
+
+  if (!hasSupabaseEnv()) {
+    listing = getDemoListing(id);
+  } else {
+    const supabase = await createClient();
+    const { data } = await supabase.from("listings").select("*").eq("id", id).single();
+    listing = data;
+  }
 
   if (!listing) {
     notFound();
