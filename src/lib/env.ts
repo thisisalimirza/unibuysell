@@ -1,4 +1,6 @@
-function readEnv(name: "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_ANON_KEY") {
+type SupabaseEnvName = "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_ANON_KEY";
+
+function readEnv(name: SupabaseEnvName) {
   const value = process.env[name];
 
   if (!value) {
@@ -8,7 +10,15 @@ function readEnv(name: "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_ANON_K
   return value;
 }
 
-export const env = {
-  supabaseUrl: readEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  supabaseAnonKey: readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
-};
+export function hasSupabaseEnv() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
+
+export function getSupabaseEnv() {
+  return {
+    supabaseUrl: readEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    supabaseAnonKey: readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+  };
+}

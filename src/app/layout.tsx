@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { signOutAction } from "@/app/auth/actions";
 import { Button } from "@/components/ui/button";
+import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
 const geistSans = Geist({
@@ -28,10 +29,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const user = hasSupabaseEnv()
+    ? await createClient()
+        .then((supabase) => supabase.auth.getUser())
+        .then(({ data }) => data.user)
+    : null;
 
   return (
     <html lang="en">

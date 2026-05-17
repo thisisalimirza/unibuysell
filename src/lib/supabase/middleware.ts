@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-import { env } from "@/lib/env";
+import { getSupabaseEnv, hasSupabaseEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
 const protectedPrefixes = ["/dashboard", "/listings", "/chats", "/profile"];
@@ -16,9 +16,16 @@ function isAuthPath(pathname: string) {
 }
 
 export async function updateSession(request: NextRequest) {
+  if (!hasSupabaseEnv()) {
+    return NextResponse.next({
+      request
+    });
+  }
+
   let response = NextResponse.next({
     request
   });
+  const env = getSupabaseEnv();
 
   const supabase = createServerClient<Database>(env.supabaseUrl, env.supabaseAnonKey, {
     cookies: {
