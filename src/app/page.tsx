@@ -18,7 +18,7 @@ const categories = [
     icon: BookOpen,
     label: "Textbooks",
     tagline: "The $200 book you used twice.",
-    desc: "Sell it to someone who actually needs it.",
+    desc: "Ship it to a student across the country who actually needs it right now.",
     color: "bg-blue-50 text-blue-600",
     ring: "hover:ring-blue-200"
   },
@@ -26,7 +26,7 @@ const categories = [
     icon: Stethoscope,
     label: "Medical Gear",
     tagline: "That Littmann you upgraded from?",
-    desc: "An MS1 out there really wants it.",
+    desc: "An MS1 somewhere wants it. Meet on campus or just ship it.",
     color: "bg-rose-50 text-rose-600",
     ring: "hover:ring-rose-200"
   },
@@ -102,8 +102,8 @@ export default function Home() {
               {[
                 "Free to join",
                 "No listing fees",
-                "Works nationwide",
-                "Real-time chat"
+                "Ship it or meet locally",
+                "Real-time private chat"
               ].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -176,8 +176,8 @@ export default function Home() {
               {
                 icon: CheckCircle2,
                 color: "bg-emerald-100 text-emerald-600",
-                title: "Safe meetup reminders",
-                desc: "Every chat reminds you to meet on campus — Student Union, library, Campus Police lot."
+                title: "Meet up or ship — your call",
+                desc: "Local? Meet on campus. Across the country? Just ship it. Both work great."
               }
             ].map((card) => (
               <div key={card.title} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/[0.05]">
@@ -188,6 +188,55 @@ export default function Home() {
                 <p className="mt-1 text-sm leading-6 text-slate-500">{card.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bulletin board / nationwide section */}
+      <section className="border-t border-slate-100 bg-white py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <p className="text-sm font-bold uppercase tracking-widest text-violet-600">Seriously though</p>
+            <h2 className="mt-3 text-3xl font-extrabold text-slate-900">
+              Why did this not exist until now?
+            </h2>
+          </div>
+          <div className="grid gap-10 lg:grid-cols-2">
+            {/* Bulletin board */}
+            <div className="rounded-3xl bg-slate-50 p-8 ring-1 ring-slate-100">
+              <div className="mb-4 text-4xl">📌</div>
+              <h3 className="text-xl font-extrabold text-slate-900">
+                Remember that random bulletin board in the hallway?
+              </h3>
+              <p className="mt-4 text-slate-600 leading-7">
+                That corkboard covered in five-year-old listings, still advertising a 2018 Toyota
+                and a Nintendo DS with a phone number that&apos;s probably disconnected. The one you
+                only remember exists when you&apos;re sitting at home, 30 minutes from campus.
+              </p>
+              <p className="mt-4 text-slate-600 leading-7">
+                <strong className="text-slate-800">This is that bulletin board.</strong> Except it&apos;s
+                on your phone, nothing is expired, and you can actually sell things on it. Browse
+                from your couch at midnight, list in two minutes, done.
+              </p>
+            </div>
+
+            {/* Ship it / nationwide */}
+            <div className="rounded-3xl bg-slate-50 p-8 ring-1 ring-slate-100">
+              <div className="mb-4 text-4xl">📦</div>
+              <h3 className="text-xl font-extrabold text-slate-900">
+                Nobody at your school needs it? Someone in Ohio does.
+              </h3>
+              <p className="mt-4 text-slate-600 leading-7">
+                You don&apos;t have to meet in person. Just ship it. Your Netter&apos;s Atlas that&apos;s
+                been collecting dust since last spring can go to a student in Ohio who&apos;s
+                freaking out about their anatomy practical in two weeks — even though your school
+                finished that module months ago.
+              </p>
+              <p className="mt-4 text-slate-600 leading-7">
+                Sell nationwide. Buy nationwide. Every person on the other end has a verified
+                university email. <strong className="text-slate-800">It&apos;s just students, all the way down.</strong>
+              </p>
+            </div>
           </div>
         </div>
       </section>
