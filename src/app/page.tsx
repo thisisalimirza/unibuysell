@@ -1,112 +1,162 @@
 import Link from "next/link";
 import {
-  ShieldCheck,
-  ArrowRight,
   BookOpen,
   Stethoscope,
   Laptop,
   Building2,
+  ArrowRight,
   CheckCircle2,
+  ShieldCheck,
+  MessageSquare,
   Star,
-  MessageSquare
 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 
 const categories = [
   {
     icon: BookOpen,
     label: "Textbooks",
     tagline: "The $200 book you used twice.",
-    desc: "Ship it to a student across the country who actually needs it right now.",
-    color: "bg-blue-50 text-blue-600",
-    ring: "hover:ring-blue-200"
+    desc: "Ship it to a student who actually needs it right now.",
   },
   {
     icon: Stethoscope,
     label: "Medical Gear",
     tagline: "That Littmann you upgraded from?",
     desc: "An MS1 somewhere wants it. Meet on campus or just ship it.",
-    color: "bg-rose-50 text-rose-600",
-    ring: "hover:ring-rose-200"
   },
   {
     icon: Laptop,
     label: "Electronics",
     tagline: "Your old iPad is someone's new study tool.",
     desc: "Calculators, laptops, tablets — sell it here.",
-    color: "bg-violet-50 text-violet-600",
-    ring: "hover:ring-violet-200"
   },
   {
     icon: Building2,
     label: "Subleases",
     tagline: "Away rotation for 6 weeks?",
     desc: "List your room. Another student needs it.",
-    color: "bg-emerald-50 text-emerald-600",
-    ring: "hover:ring-emerald-200"
-  }
+  },
+];
+
+const trustCards = [
+  {
+    num: "01",
+    icon: ShieldCheck,
+    title: "Only .edu accounts",
+    desc: "Every single person is a verified student. Not a maybe — verified.",
+  },
+  {
+    num: "02",
+    icon: MessageSquare,
+    title: "Private chat, always",
+    desc: "You never share your number. Negotiate and coordinate fully in-app.",
+  },
+  {
+    num: "03",
+    icon: Star,
+    title: "Real reviews only",
+    desc: "You can only leave a review after a real completed sale.",
+  },
+  {
+    num: "04",
+    icon: CheckCircle2,
+    title: "Meet up or ship",
+    desc: "Local? Meet on campus. Across the country? Just ship it.",
+  },
 ];
 
 export default function Home() {
   return (
     <main>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-violet-600 to-indigo-700">
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-slate-900">
+        {/* subtle radial glow */}
         <div
-          className="absolute inset-0 opacity-10"
+          className="pointer-events-none absolute inset-0 opacity-30"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+            background:
+              "radial-gradient(ellipse 80% 60% at 10% 50%, #92400e 0%, transparent 60%)",
           }}
         />
+
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-36">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white/90 ring-1 ring-white/20 backdrop-blur-sm">
-              <ShieldCheck className="h-4 w-4 text-emerald-300" />
-              University email required · No strangers
-            </span>
-
-            <h1 className="mt-6 text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl">
-              Sell your stuff to students
-              <span className="block text-yellow-300"> you can actually trust.</span>
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80">
-              No Facebook Marketplace randos. No eBay fees. No sketchy meetups with strangers.
-              Just your fellow students — every single one verified by their university email.
-            </p>
-
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-violet-700 shadow-xl hover:bg-slate-50 hover:text-violet-800"
-              >
-                <Link href="/auth/sign-up">
-                  Get your free spot
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/50"
-              >
-                <Link href="/auth/sign-in">Already have an account</Link>
-              </Button>
+          <div className="max-w-4xl">
+            {/* Badge */}
+            <div
+              className="animate-fade-up mb-8 inline-flex items-center gap-2.5"
+              style={{ animationDelay: "0ms" }}
+            >
+              <span className="flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
+                University-verified marketplace
+              </span>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/70">
+            {/* Headline */}
+            <h1 className="font-serif">
+              <span
+                className="animate-fade-up block text-5xl font-bold leading-none tracking-tight text-white sm:text-6xl lg:text-8xl"
+                style={{ animationDelay: "80ms" }}
+              >
+                Sell your stuff
+              </span>
+              <span
+                className="animate-fade-up block text-5xl font-bold leading-none tracking-tight text-white sm:text-6xl lg:text-8xl"
+                style={{ animationDelay: "180ms" }}
+              >
+                to students
+              </span>
+              <span
+                className="animate-fade-up block text-5xl font-bold leading-none tracking-tight text-amber-400 sm:text-6xl lg:text-8xl"
+                style={{ animationDelay: "280ms" }}
+              >
+                you can trust.
+              </span>
+            </h1>
+
+            {/* Subtext */}
+            <p
+              className="animate-fade-up mt-8 max-w-xl text-lg leading-relaxed text-slate-400"
+              style={{ animationDelay: "380ms" }}
+            >
+              No Facebook Marketplace randos. No eBay fees. No sketchy meetups.
+              Every person on UniBuySell has a verified university email — that&apos;s
+              the whole deal.
+            </p>
+
+            {/* CTAs */}
+            <div
+              className="animate-fade-up mt-10 flex flex-col gap-3 sm:flex-row"
+              style={{ animationDelay: "460ms" }}
+            >
+              <Link
+                href="/auth/sign-up"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-amber-400 px-8 py-4 text-sm font-bold text-slate-900 transition-all hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/25 active:scale-95"
+              >
+                Get your free spot
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/auth/sign-in"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-semibold text-white/80 transition-all hover:border-white/40 hover:text-white hover:bg-white/5"
+              >
+                Already have an account
+              </Link>
+            </div>
+
+            {/* Trust row */}
+            <div
+              className="animate-fade-up mt-12 flex flex-wrap gap-x-6 gap-y-2"
+              style={{ animationDelay: "540ms" }}
+            >
               {[
                 "Free to join",
                 "No listing fees",
-                "Ship it or meet locally",
-                "Real-time private chat"
+                ".edu verified only",
+                "Ships nationwide",
               ].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span key={item} className="flex items-center gap-2 text-sm text-slate-500">
+                  <span className="text-amber-500">✓</span>
                   {item}
                 </span>
               ))}
@@ -115,254 +165,265 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The honest pitch */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-violet-600">
-              Why we built this
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold text-slate-900">
-              Selling on Facebook Marketplace sucks.
-              <span className="text-violet-600"> We fixed it.</span>
-            </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              You've got a $180 anatomy atlas taking up shelf space. You want to sell it. But
-              Facebook Marketplace means meeting a stranger in a parking lot who might ghost you.
-              eBay means fees, shipping, and 47 steps to list a textbook.
-            </p>
-            <p className="mt-4 text-lg text-slate-600">
-              We wanted a place where you could just{" "}
-              <strong className="text-slate-800">list your thing, trust the buyer, and get it done</strong>.
-              So we built it — and made sure every person on the platform has a verified
-              university email before they can do anything.
-            </p>
-            <div className="mt-8 flex flex-col gap-3">
-              {[
-                "Every buyer and seller has a confirmed .edu (or equivalent) email",
-                "Your personal email and phone number are never shared",
-                "All negotiation happens in private in-app chat",
-                "Reviews are only unlocked after a completed sale"
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-emerald-500" />
-                  <span className="text-slate-700">{item}</span>
+      {/* ── The honest pitch ── */}
+      <section className="bg-[#faf8f2] py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+            {/* Left: editorial text */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-amber-600">
+                Why we built this
+              </p>
+              <h2 className="mt-4 font-serif text-4xl font-bold leading-tight text-slate-900 lg:text-5xl">
+                Selling on Facebook
+                Marketplace sucks.{" "}
+                <span className="text-amber-500">We fixed it.</span>
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-stone-600">
+                You&apos;ve got a $180 anatomy atlas taking up shelf space. But Facebook
+                Marketplace means meeting a stranger in a parking lot. eBay means fees,
+                47 steps, and no one to hold accountable.
+              </p>
+              <p className="mt-4 text-lg leading-relaxed text-stone-600">
+                We wanted a place where you could{" "}
+                <strong className="font-bold text-slate-800">
+                  list your thing, trust the buyer, and get it done.
+                </strong>{" "}
+                So we built it — and made sure every person has a verified university
+                email before they can do anything.
+              </p>
+              <Link
+                href="/auth/sign-up"
+                className="mt-8 inline-flex items-center gap-2 font-semibold text-slate-900 underline decoration-amber-400 decoration-2 underline-offset-4 hover:text-amber-600 transition-colors"
+              >
+                Join for free <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Right: numbered trust cards */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              {trustCards.map((card) => (
+                <div
+                  key={card.num}
+                  className="border-t-2 border-amber-400 bg-white p-6 shadow-sm"
+                >
+                  <span className="text-xs font-bold tracking-widest text-amber-500">
+                    {card.num}
+                  </span>
+                  <div className="mt-3 inline-flex rounded-lg bg-amber-50 p-2.5">
+                    <card.icon className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <p className="mt-2 font-bold text-slate-900">{card.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-stone-500">
+                    {card.desc}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Stats / social proof panel */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              {
-                icon: ShieldCheck,
-                color: "bg-violet-100 text-violet-600",
-                title: "Only .edu accounts",
-                desc: "Every single person on here is a verified student. Not a maybe, not a probably — verified."
-              },
-              {
-                icon: MessageSquare,
-                color: "bg-blue-100 text-blue-600",
-                title: "Private chat, always",
-                desc: "You never have to share your number. Negotiate, agree, and coordinate all in-app."
-              },
-              {
-                icon: Star,
-                color: "bg-amber-100 text-amber-600",
-                title: "Real reviews only",
-                desc: "You can only leave a review after a real completed sale. No fake ratings."
-              },
-              {
-                icon: CheckCircle2,
-                color: "bg-emerald-100 text-emerald-600",
-                title: "Meet up or ship — your call",
-                desc: "Local? Meet on campus. Across the country? Just ship it. Both work great."
-              }
-            ].map((card) => (
-              <div key={card.title} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/[0.05]">
-                <div className={`mb-3 inline-flex rounded-xl p-2.5 ${card.color}`}>
-                  <card.icon className="h-5 w-5" />
-                </div>
-                <p className="font-bold text-slate-900">{card.title}</p>
-                <p className="mt-1 text-sm leading-6 text-slate-500">{card.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* Bulletin board / nationwide section */}
-      <section className="border-t border-slate-100 bg-white py-20">
+      {/* ── Bulletin board / nationwide ── */}
+      <section className="border-t border-stone-200 bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <p className="text-sm font-bold uppercase tracking-widest text-violet-600">Seriously though</p>
-            <h2 className="mt-3 text-3xl font-extrabold text-slate-900">
+          <div className="mb-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-600">
+              Seriously though
+            </p>
+            <h2 className="mt-3 font-serif text-4xl font-bold text-slate-900 lg:text-5xl">
               Why did this not exist until now?
             </h2>
           </div>
-          <div className="grid gap-10 lg:grid-cols-2">
-            {/* Bulletin board */}
-            <div className="rounded-3xl bg-slate-50 p-8 ring-1 ring-slate-100">
-              <div className="mb-4 text-4xl">📌</div>
-              <h3 className="text-xl font-extrabold text-slate-900">
-                Remember that random bulletin board in the hallway?
-              </h3>
-              <p className="mt-4 text-slate-600 leading-7">
-                That corkboard covered in five-year-old listings, still advertising a 2018 Toyota
-                and a Nintendo DS with a phone number that&apos;s probably disconnected. The one you
-                only remember exists when you&apos;re sitting at home, 30 minutes from campus.
-              </p>
-              <p className="mt-4 text-slate-600 leading-7">
-                <strong className="text-slate-800">This is that bulletin board.</strong> Except it&apos;s
-                on your phone, nothing is expired, and you can actually sell things on it. Browse
-                from your couch at midnight, list in two minutes, done.
-              </p>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Bulletin board card */}
+            <div className="overflow-hidden rounded-2xl ring-1 ring-stone-200">
+              <div className="bg-slate-900 px-6 py-3.5">
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
+                  📌 The Old Way
+                </span>
+              </div>
+              <div className="bg-white p-8">
+                <h3 className="font-serif text-2xl font-bold text-slate-900">
+                  Remember that bulletin board in the hallway?
+                </h3>
+                <p className="mt-4 leading-7 text-stone-600">
+                  That corkboard covered in five-year-old listings, still advertising a
+                  2018 Toyota and a Nintendo DS with a disconnected phone number. The one
+                  you only remember exists when you&apos;re sitting at home, 30 minutes from
+                  campus.
+                </p>
+                <p className="mt-4 leading-7 text-stone-600">
+                  <strong className="text-slate-800">This is that bulletin board.</strong>{" "}
+                  Except it&apos;s on your phone, nothing is expired, and you can actually
+                  sell things on it. Browse from your couch at midnight, list in two
+                  minutes, done.
+                </p>
+              </div>
             </div>
 
-            {/* Ship it / nationwide */}
-            <div className="rounded-3xl bg-slate-50 p-8 ring-1 ring-slate-100">
-              <div className="mb-4 text-4xl">📦</div>
-              <h3 className="text-xl font-extrabold text-slate-900">
-                Nobody at your school needs it? Someone in Ohio does.
-              </h3>
-              <p className="mt-4 text-slate-600 leading-7">
-                You don&apos;t have to meet in person. Just ship it. Your Netter&apos;s Atlas that&apos;s
-                been collecting dust since last spring can go to a student in Ohio who&apos;s
-                freaking out about their anatomy practical in two weeks — even though your school
-                finished that module months ago.
-              </p>
-              <p className="mt-4 text-slate-600 leading-7">
-                Sell nationwide. Buy nationwide. Every person on the other end has a verified
-                university email. <strong className="text-slate-800">It&apos;s just students, all the way down.</strong>
-              </p>
+            {/* Ship it card */}
+            <div className="overflow-hidden rounded-2xl ring-1 ring-stone-200">
+              <div className="bg-amber-400 px-6 py-3.5">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-900">
+                  📦 The New Way
+                </span>
+              </div>
+              <div className="bg-white p-8">
+                <h3 className="font-serif text-2xl font-bold text-slate-900">
+                  Nobody at your school needs it? Someone in Ohio does.
+                </h3>
+                <p className="mt-4 leading-7 text-stone-600">
+                  You don&apos;t have to meet in person. Just ship it. Your Netter&apos;s Atlas
+                  collecting dust since last spring can go to a student in Ohio who&apos;s
+                  freaking out about their anatomy practical in two weeks.
+                </p>
+                <p className="mt-4 leading-7 text-stone-600">
+                  Sell nationwide. Buy nationwide. Every person on the other end has a
+                  verified university email.{" "}
+                  <strong className="text-slate-800">It&apos;s just students, all the way down.</strong>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="bg-slate-50 py-16">
+      {/* ── Categories ── */}
+      <section className="bg-slate-900 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h2 className="text-2xl font-extrabold text-slate-900">
+          <div className="mb-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-400">
               What can you list?
-            </h2>
-            <p className="mt-1 text-slate-500">
-              Pretty much anything a student buys, uses, and eventually needs to get rid of.
             </p>
+            <h2 className="mt-3 font-serif text-3xl font-bold text-white lg:text-4xl">
+              Pretty much anything a student buys,
+              <br className="hidden sm:block" /> uses, and eventually needs to get rid of.
+            </h2>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((cat) => (
               <Link
                 key={cat.label}
                 href={`/listings?category=${encodeURIComponent(cat.label)}`}
-                className={`group block rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/[0.05] transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-2 ${cat.ring}`}
+                className="group block rounded-2xl bg-slate-800 p-6 ring-1 ring-white/5 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-400/20 hover:ring-0"
               >
-                <div className={`mb-3 inline-flex rounded-xl p-3 ${cat.color}`}>
+                <div className="mb-5 inline-flex rounded-xl bg-white/5 p-3 text-amber-400 transition-colors duration-300 group-hover:bg-slate-900/15 group-hover:text-slate-900">
                   <cat.icon className="h-6 w-6" />
                 </div>
-                <p className="font-bold text-slate-900 group-hover:text-violet-700 transition-colors">
+                <p className="text-lg font-bold text-white transition-colors duration-300 group-hover:text-slate-900">
                   {cat.label}
                 </p>
-                <p className="mt-1 text-sm font-medium text-slate-600">{cat.tagline}</p>
-                <p className="mt-0.5 text-xs text-slate-400">{cat.desc}</p>
+                <p className="mt-1 text-sm font-medium text-slate-400 transition-colors duration-300 group-hover:text-slate-800">
+                  {cat.tagline}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500 transition-colors duration-300 group-hover:text-slate-700">
+                  {cat.desc}
+                </p>
+                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-slate-500 transition-colors duration-300 group-hover:text-slate-800">
+                  Browse listings
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                </div>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Med student callout */}
-      <section id="med-students" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 lg:p-14">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+      {/* ── Med student callout ── */}
+      <section id="med-students" className="bg-amber-400 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-rose-500/20 px-4 py-1.5 text-sm font-semibold text-rose-300 ring-1 ring-rose-500/30">
-                <Stethoscope className="h-4 w-4" />
-                Hey, med students — this one's for you
+              <span className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-amber-400">
+                <Stethoscope className="h-3.5 w-3.5" />
+                Hey, med students — this one&apos;s for you
               </span>
-              <h2 className="mt-5 text-3xl font-extrabold text-white">
-                Away rotations are chaotic enough. Your housing situation shouldn't be.
+              <h2 className="mt-6 font-serif text-4xl font-bold leading-tight text-slate-900 lg:text-5xl">
+                Away rotations are chaotic enough. Your housing
+                situation shouldn&apos;t be.
               </h2>
-              <p className="mt-4 text-slate-400">
-                Right now, medical students sublease apartments and rooms through random
-                GroupMes, Facebook groups, and word-of-mouth — which means dealing with
-                people you don't really know, awkward negotiations over text, and zero
-                accountability if something goes wrong.
+              <p className="mt-5 leading-7 text-amber-900">
+                Right now, med students sublease through random GroupMes and Facebook
+                groups — dealing with people you don&apos;t really know, awkward negotiations,
+                and zero accountability. Post your place here instead.
               </p>
-              <p className="mt-3 text-slate-400">
-                Post your place here. Another verified medical student doing their rotation
-                in your city finds it. You both have real profiles, real reviews, and
-                real school emails. Done.
-              </p>
-              <div className="mt-6 flex flex-col gap-2.5">
+              <div className="mt-8 flex flex-col gap-3">
                 {[
                   "List your room for the exact dates of your rotation",
                   "Incoming students search by location or school",
                   "Chat privately, agree on terms, done",
-                  "Both parties are verified students — no randos"
+                  "Both parties are verified students — no randos",
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-2.5 text-sm text-slate-300">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-emerald-400" />
+                  <div key={item} className="flex items-start gap-3 text-sm font-medium text-slate-900">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-slate-900" />
                     {item}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="flex flex-col items-start gap-5 lg:items-center">
-              <div className="rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 lg:w-full">
-                <p className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+
+            <div className="flex flex-col gap-6">
+              <div className="rounded-2xl bg-white/70 p-7 ring-1 ring-amber-300/50 backdrop-blur-sm">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
                   Real scenario
                 </p>
-                <p className="mt-3 text-white text-lg font-medium leading-7">
-                  "I'm doing my internal medicine rotation in Chicago for 6 weeks starting
+                <p className="mt-4 text-lg font-medium leading-7 text-slate-900">
+                  &ldquo;I&apos;m doing my internal medicine rotation in Chicago for 6 weeks starting
                   March 15th. My apartment is sitting empty. Another med student from a
-                  different school is rotating into Chicago that exact week."
+                  different school is rotating into Chicago that exact week.&rdquo;
                 </p>
-                <p className="mt-4 text-emerald-400 font-semibold">
+                <p className="mt-5 font-bold text-slate-900">
                   → Both verified. Both students. Easy sublease, no sketchy strangers.
                 </p>
               </div>
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-slate-900 hover:bg-slate-100 shadow-xl w-full lg:w-auto"
+
+              <Link
+                href="/auth/sign-up"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-8 py-4 font-bold text-white transition-all hover:bg-slate-800 hover:shadow-xl hover:shadow-slate-900/30 active:scale-95 lg:w-auto"
               >
-                <Link href="/auth/sign-up">
-                  Post your sublease
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+                Post your sublease
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Simple CTA */}
-      <section id="safety" className="border-t border-slate-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-extrabold text-slate-900">
-              Ready to clear some space?
-            </h2>
-            <p className="mt-4 text-lg text-slate-500">
-              Takes about 2 minutes to sign up. Drop your university email, confirm it,
-              and you're in. Your first listing takes another 2 minutes. That's it.
+      {/* ── Final CTA ── */}
+      <section id="safety" className="bg-slate-900 py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-400">
+              That&apos;s it. That&apos;s the whole pitch.
             </p>
-            <div className="mt-8 flex justify-center gap-4">
-              <Button asChild size="lg">
-                <Link href="/auth/sign-up">
-                  Let's go
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/listings">Browse first</Link>
-              </Button>
+            <h2 className="mt-5 font-serif text-5xl font-bold text-white lg:text-7xl">
+              Ready to clear
+              <span className="text-amber-400"> some space?</span>
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-slate-400">
+              Takes about 2 minutes to sign up. Drop your university email, confirm it,
+              and you&apos;re in. Your first listing takes another 2 minutes.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/auth/sign-up"
+                className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-10 py-4 font-bold text-slate-900 transition-all hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/25 active:scale-95"
+              >
+                Let&apos;s go
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/listings"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-10 py-4 font-semibold text-white/70 transition-all hover:border-white/40 hover:text-white hover:bg-white/5"
+              >
+                Browse first
+              </Link>
             </div>
-            <p className="mt-6 text-sm text-slate-400">
-              Free to join. No listing fees. Your info stays private.
+            <p className="mt-8 text-sm text-slate-600">
+              Free to join · No listing fees · Your info stays private
             </p>
           </div>
         </div>

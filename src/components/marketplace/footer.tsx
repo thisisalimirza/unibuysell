@@ -3,16 +3,15 @@ import { ShieldCheck, MapPin, ArrowRight } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-100 bg-slate-900 text-slate-400">
+    <footer className="border-t border-white/5 bg-slate-900 text-slate-400">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-xs font-bold text-white">
-                UB
+              <span className="font-serif text-xl font-bold text-white">
+                Uni<span className="text-amber-400">Buy</span>Sell
               </span>
-              <span className="font-bold text-white">UniBuySell</span>
             </div>
             <p className="mt-3 text-sm leading-6">
               Sell your stuff to students you can actually trust. No Facebook randos,
@@ -20,7 +19,7 @@ export function Footer() {
             </p>
             <Link
               href="/auth/sign-up"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-amber-400 hover:text-amber-300 transition-colors"
             >
               Join free <ArrowRight className="h-3.5 w-3.5" />
             </Link>

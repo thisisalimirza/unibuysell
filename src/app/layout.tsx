@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 
@@ -11,24 +11,27 @@ import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { demoCurrentUserId } from "@/lib/demo-data";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"]
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"]
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
   title: "UniBuySell — Buy & Sell with Students You Can Actually Trust",
   description:
-    "Tired of Facebook Marketplace randos and eBay fees? UniBuySell is a verified-only marketplace for college and med students. List your stuff in 2 minutes."
+    "Tired of Facebook Marketplace randos and eBay fees? UniBuySell is a verified-only marketplace for college and med students. List your stuff in 2 minutes.",
 };
 
 export default async function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -42,33 +45,32 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}>
-        <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <body
+        className={`${fraunces.variable} ${plusJakarta.variable} flex min-h-screen flex-col antialiased`}
+      >
+        <header className="sticky top-0 z-40 border-b border-stone-200/70 bg-[#faf8f2]/95 backdrop-blur-sm">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-xs font-bold text-white shadow-md shadow-violet-200 transition group-hover:bg-violet-500">
-                UB
-              </span>
-              <span className="hidden font-bold text-slate-900 sm:block">
-                Uni<span className="text-violet-600">BuySell</span>
+            <Link href="/" className="flex items-center group">
+              <span className="font-serif text-xl font-bold tracking-tight text-slate-900 transition-opacity group-hover:opacity-80">
+                Uni<span className="text-amber-500">Buy</span>Sell
               </span>
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden items-center gap-1 md:flex">
+            <nav className="hidden items-center gap-0.5 md:flex">
               {showInternalNav ? (
                 <>
                   {[
                     { href: "/dashboard", label: "Dashboard" },
                     { href: "/listings", label: "Listings" },
                     { href: "/chats", label: "Messages" },
-                    { href: `/profile/${user?.id}`, label: "My Profile" }
+                    { href: `/profile/${user?.id}`, label: "My Profile" },
                   ].map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                      className="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-900"
                     >
                       {link.label}
                     </Link>
@@ -76,10 +78,16 @@ export default async function RootLayout({
                 </>
               ) : (
                 <>
-                  <Link href="/#trust" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
+                  <Link
+                    href="/#trust"
+                    className="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-900"
+                  >
                     Trust
                   </Link>
-                  <Link href="/#safety" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
+                  <Link
+                    href="/#safety"
+                    className="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-900"
+                  >
                     Safety
                   </Link>
                 </>
@@ -102,10 +110,19 @@ export default async function RootLayout({
                 )
               ) : (
                 <>
-                  <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="hidden text-stone-700 hover:text-stone-900 md:inline-flex"
+                  >
                     <Link href="/auth/sign-in">Sign in</Link>
                   </Button>
-                  <Button asChild size="sm" className="hidden md:inline-flex">
+                  <Button
+                    asChild
+                    size="sm"
+                    className="hidden bg-slate-900 text-white hover:bg-slate-800 md:inline-flex"
+                  >
                     <Link href="/auth/sign-up">Join free</Link>
                   </Button>
                 </>
