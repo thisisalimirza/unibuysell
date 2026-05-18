@@ -150,14 +150,14 @@ export default async function ChatPage({
           {/* Transaction */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle>Sale status</CardTitle>
+              <CardTitle>How&apos;s it going?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Badge variant={transaction ? "verified" : "secondary"}>
                 {transaction ? (
-                  <><CheckCircle2 className="mr-1 h-3 w-3" />Completed</>
+                  <><CheckCircle2 className="mr-1 h-3 w-3" />Done — nice one!</>
                 ) : (
-                  "Negotiating"
+                  "Still chatting"
                 )}
               </Badge>
 
@@ -165,7 +165,7 @@ export default async function ChatPage({
                 <form action={completeSaleAction}>
                   <input type="hidden" name="chatRoomId" value={room.id} />
                   <Button type="submit" className="w-full" size="sm">
-                    Mark as sold to this buyer
+                    Sold it to this person ✓
                   </Button>
                 </form>
               ) : null}
@@ -173,7 +173,7 @@ export default async function ChatPage({
               {transaction && !existingReview && otherProfile ? (
                 <div className="border-t border-slate-100 pt-4">
                   <p className="mb-3 text-sm font-semibold text-slate-800">
-                    Leave a review for {otherProfile.full_name.split(" ")[0]}
+                    How was {otherProfile.full_name.split(" ")[0]} to deal with?
                   </p>
                   <ReviewForm
                     transactionId={transaction.id}
@@ -186,7 +186,7 @@ export default async function ChatPage({
               {transaction && existingReview ? (
                 <p className="flex items-center gap-2 text-sm text-emerald-700">
                   <CheckCircle2 className="h-4 w-4" />
-                  Review submitted
+                  Review left — thanks for keeping it real
                 </p>
               ) : null}
             </CardContent>

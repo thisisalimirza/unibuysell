@@ -77,12 +77,12 @@ export default async function ListingsPage({
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Verified listings
+            What&apos;s for sale
           </h1>
           <p className="mt-1.5 text-slate-500">
             {listings.length > 0
-              ? `${listings.length} item${listings.length !== 1 ? "s" : ""} from confirmed students`
-              : "From confirmed university students — contact via private chat"}
+              ? `${listings.length} thing${listings.length !== 1 ? "s" : ""} listed by verified students`
+              : "Real listings from real students — every one of them verified"}
           </p>
         </div>
         <Button asChild>
@@ -180,17 +180,17 @@ export default async function ListingsPage({
             {params.category ? categoryIcons[params.category] ?? "🔍" : "🔍"}
           </div>
           <div>
-            <p className="font-bold text-slate-800">No listings found</p>
+            <p className="font-bold text-slate-800">Nothing here yet</p>
             <p className="mt-1 text-sm text-slate-500">
               {params.q || params.category
-                ? "Try a different search or category."
-                : "Be the first to post something."}
+                ? "Try a different search or browse all categories."
+                : "Your classmates are slacking. Be the first to list something."}
             </p>
           </div>
           <Button asChild>
             <Link href="/listings/new">
               <Plus className="h-4 w-4" />
-              Create listing
+              List something
             </Link>
           </Button>
         </div>

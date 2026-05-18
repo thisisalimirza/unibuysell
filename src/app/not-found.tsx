@@ -10,9 +10,9 @@ export default function NotFound() {
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
           <SearchX className="h-10 w-10 text-slate-400" />
         </div>
-        <h1 className="text-2xl font-extrabold text-slate-900">Page not found</h1>
+        <h1 className="text-2xl font-extrabold text-slate-900">Hmm, nothing here</h1>
         <p className="mt-3 max-w-sm text-slate-500">
-          This listing or resource doesn't exist or has been removed from the marketplace.
+          This listing is either gone or never existed. It happens — things sell fast around here.
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Button asChild variant="outline">

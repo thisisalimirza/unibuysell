@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UniBuySell | Verified Student Marketplace",
+  title: "UniBuySell — Buy & Sell with Students You Can Actually Trust",
   description:
-    "A closed, trusted buy-and-sell marketplace for verified college and medical school students."
+    "Tired of Facebook Marketplace randos and eBay fees? UniBuySell is a verified-only marketplace for college and med students. List your stuff in 2 minutes."
 };
 
 export default async function RootLayout({

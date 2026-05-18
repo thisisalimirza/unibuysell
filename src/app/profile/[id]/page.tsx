@@ -75,15 +75,15 @@ export default async function ProfilePage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Verification</CardTitle>
+              <CardTitle>Verified student ✓</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-slate-600">
-              <p>Institution: {profile.university_name}</p>
-              <p>Domain: @{profile.university_domain}</p>
+              <p>School: {profile.university_name}</p>
+              <p>Email domain: @{profile.university_domain}</p>
               <p>Status: {profile.enrollment_status.replaceAll("_", " ")}</p>
               {profile.verified_at ? (
                 <p className="text-emerald-700">
-                  Verified since {formatDate(profile.verified_at)}
+                  On here since {formatDate(profile.verified_at)}
                 </p>
               ) : null}
             </CardContent>
@@ -94,7 +94,7 @@ export default async function ProfilePage({
           <div>
             <div className="mb-4 flex items-center justify-between">
               <h1 className="text-2xl font-bold text-slate-950">
-                {isOwnProfile ? "Your active listings" : "Active listings"}
+                {isOwnProfile ? "Your stuff for sale" : "What they're selling"}
               </h1>
               {isOwnProfile ? (
                 <Button asChild size="sm">
@@ -112,8 +112,8 @@ export default async function ProfilePage({
               <Card>
                 <CardContent className="p-8 text-center text-slate-500">
                   {isOwnProfile
-                    ? "You have no active listings. Create one to start selling."
-                    : "No active listings at the moment."}
+                    ? "Nothing listed yet — got something taking up space? List it!"
+                    : "Nothing for sale right now. Check back later."}
                 </CardContent>
               </Card>
             )}
@@ -121,7 +121,7 @@ export default async function ProfilePage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Transaction reviews ({reviews.length})</CardTitle>
+              <CardTitle>Reviews from other students{reviews.length > 0 ? ` (${reviews.length})` : ""}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {reviews.length ? (
@@ -140,7 +140,7 @@ export default async function ProfilePage({
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-slate-500">No completed transaction reviews yet.</p>
+                <p className="text-sm text-slate-500">No reviews yet — complete a sale to get your first one.</p>
               )}
             </CardContent>
           </Card>

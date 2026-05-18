@@ -77,11 +77,11 @@ export default async function ChatsPage() {
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Messages</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Your chats</h1>
           <p className="mt-1.5 text-slate-500">
             {rooms.length > 0
-              ? `${rooms.length} active conversation${rooms.length !== 1 ? "s" : ""}`
-              : "Private negotiation — your email is never shared"}
+              ? `${rooms.length} conversation${rooms.length !== 1 ? "s" : ""} going`
+              : "All private. Your email is never shared with anyone."}
           </p>
         </div>
         <Button asChild variant="outline" size="sm">
@@ -137,7 +137,7 @@ export default async function ChatsPage() {
                         {" · "}{formatDate(lastMsg.created_at)}
                       </p>
                     ) : (
-                      <p className="mt-1 text-xs italic text-slate-400">No messages yet</p>
+                      <p className="mt-1 text-xs italic text-slate-400">Say hi first 👋</p>
                     )}
                   </div>
                 </div>
@@ -151,9 +151,9 @@ export default async function ChatsPage() {
             <MessageSquare className="h-8 w-8 text-violet-400" />
           </div>
           <div>
-            <p className="font-bold text-slate-800">No conversations yet</p>
+            <p className="font-bold text-slate-800">No chats yet</p>
             <p className="mt-1.5 text-sm text-slate-500">
-              Find a listing you like and click "Message seller" to start a private chat.
+              See something you want? Hit "Message them" on the listing and you&apos;re in.
             </p>
           </div>
           <Button asChild>

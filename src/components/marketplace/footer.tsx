@@ -15,8 +15,8 @@ export function Footer() {
               <span className="font-bold text-white">UniBuySell</span>
             </div>
             <p className="mt-3 text-sm leading-6">
-              A verified-only marketplace for college and medical school students.
-              No fake accounts, no public providers.
+              Sell your stuff to students you can actually trust. No Facebook randos,
+              no eBay fees, no sketchy meetups. Just verified students.
             </p>
             <Link
               href="/auth/sign-up"

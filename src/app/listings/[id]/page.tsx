@@ -131,7 +131,7 @@ export default async function ListingDetailPage({
             {/* Sold notice */}
             {listing.status === "sold" ? (
               <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                This listing has been sold. Browse other listings for similar items.
+                This one&apos;s gone. Check the listings page — something similar might be up.
               </div>
             ) : null}
 
@@ -156,7 +156,7 @@ export default async function ListingDetailPage({
                     size="lg"
                     disabled={listing.status === "sold"}
                   >
-                    {listing.status === "sold" ? "Listing closed" : "Message seller securely"}
+                    {listing.status === "sold" ? "Already sold — sorry!" : "Message them"}
                   </Button>
                 </form>
               )}
@@ -171,9 +171,9 @@ export default async function ListingDetailPage({
             <CardContent className="flex items-start gap-3 p-4">
               <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-amber-600" />
               <div className="text-sm text-amber-800">
-                <p className="font-semibold">Stay safe</p>
+                <p className="font-semibold">Meet somewhere obvious</p>
                 <p className="mt-0.5">
-                  Meet in a campus Safe Zone — Student Union, library lobby, residence hall front desk, or Campus Police lot.
+                  Student Union, library lobby, or residence hall front desk. Public, busy, zero stress.
                 </p>
               </div>
             </CardContent>

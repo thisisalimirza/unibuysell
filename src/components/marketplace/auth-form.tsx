@@ -22,10 +22,10 @@ function SubmitButton({ mode }: { mode: AuthFormProps["mode"] }) {
   return (
     <Button type="submit" className="w-full" size="lg" disabled={pending}>
       {pending
-        ? "Please wait…"
+        ? "One sec…"
         : mode === "sign-in"
-          ? "Sign in to marketplace"
-          : "Create verified account"}
+          ? "Sign me in"
+          : "Claim my spot"}
     </Button>
   );
 }
@@ -45,12 +45,12 @@ export function AuthForm({ mode, action, message }: AuthFormProps) {
           <span className="text-lg font-bold text-white">UB</span>
         </div>
         <h1 className="text-2xl font-bold text-slate-900">
-          {isSignUp ? "Join UniBuySell" : "Welcome back"}
+          {isSignUp ? "Get your verified spot" : "Welcome back 👋"}
         </h1>
         <p className="mt-2 text-sm text-slate-500">
           {isSignUp
-            ? "Only verified university and medical school emails accepted."
-            : "Sign in with your confirmed institutional email."}
+            ? "Drop your university email and we'll get you set up. Takes about 2 minutes."
+            : "Good to see you. Your classmates have been posting stuff."}
         </p>
       </div>
 
@@ -59,8 +59,14 @@ export function AuthForm({ mode, action, message }: AuthFormProps) {
         <form action={formAction} className="space-y-5">
           {isSignUp ? (
             <div className="space-y-1.5">
-              <Label htmlFor="fullName">Full name</Label>
-              <Input id="fullName" name="fullName" autoComplete="name" placeholder="Your full name" required />
+              <Label htmlFor="fullName">Your name</Label>
+              <Input
+                id="fullName"
+                name="fullName"
+                autoComplete="name"
+                placeholder="First and last name"
+                required
+              />
             </div>
           ) : null}
 
@@ -71,24 +77,25 @@ export function AuthForm({ mode, action, message }: AuthFormProps) {
               name="email"
               type="email"
               inputMode="email"
-              placeholder="you@school.edu"
+              placeholder="you@yourschool.edu"
               autoComplete="email"
               required
             />
+            {isSignUp ? (
+              <p className="text-xs text-slate-400">
+                Needs to be a real university email — .edu, .ac.uk, .edu.au, etc. No Gmail.
+              </p>
+            ) : null}
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              {!isSignUp ? (
-                <span className="text-xs text-slate-400">Min. 8 characters</span>
-              ) : null}
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               name="password"
               type="password"
               autoComplete={isSignUp ? "new-password" : "current-password"}
+              placeholder={isSignUp ? "At least 8 characters" : "Your password"}
               required
               minLength={8}
             />
@@ -115,12 +122,12 @@ export function AuthForm({ mode, action, message }: AuthFormProps) {
         </form>
 
         <div className="mt-6 text-center text-sm text-slate-500">
-          {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+          {isSignUp ? "Already have an account?" : "Don't have an account yet?"}{" "}
           <Link
             className="font-semibold text-violet-600 hover:text-violet-700 hover:underline"
             href={isSignUp ? "/auth/sign-in" : "/auth/sign-up"}
           >
-            {isSignUp ? "Sign in" : "Join free"}
+            {isSignUp ? "Sign in" : "Join free — it's quick"}
           </Link>
         </div>
       </div>

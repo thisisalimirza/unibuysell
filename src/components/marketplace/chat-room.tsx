@@ -102,7 +102,7 @@ export function ChatRoom({ roomId, currentUserId, initialMessages, demoMode = fa
       <div className="flex items-start gap-3 border-b border-amber-100 bg-amber-50 px-4 py-3">
         <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-amber-600" />
         <p className="text-xs leading-5 text-amber-800">
-          <strong>Safe Meeting Zones:</strong> Student Union, library lobby, residence hall front desk, or Campus Police lot. Keep all details in this chat.
+          <strong>Quick tip:</strong> Meet somewhere busy — Student Union, library lobby, or res hall front desk. And keep everything in this chat so there&apos;s a paper trail.
         </p>
       </div>
 
@@ -112,8 +112,8 @@ export function ChatRoom({ roomId, currentUserId, initialMessages, demoMode = fa
           <div className="flex h-full items-center justify-center py-12 text-center text-sm text-slate-400">
             <div>
               <ShieldCheck className="mx-auto mb-2 h-8 w-8 text-slate-300" />
-              <p className="font-medium">No messages yet</p>
-              <p className="mt-1">Start the conversation — remember to stay safe!</p>
+              <p className="font-medium">Nothing here yet</p>
+              <p className="mt-1">Say hi — they don&apos;t bite, they&apos;re a student like you</p>
             </div>
           </div>
         ) : null}

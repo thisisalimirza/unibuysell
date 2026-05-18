@@ -29,10 +29,9 @@ export default async function ProfileEditPage() {
     <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
-          <CardTitle>Edit profile</CardTitle>
+          <CardTitle>Your profile</CardTitle>
           <CardDescription>
-            Update your display name, school, and enrollment status. Your verified email domain
-            cannot be changed.
+            Update your name, school, and status. Your email domain is locked in — that&apos;s what makes you verified.
           </CardDescription>
         </CardHeader>
         <CardContent>
