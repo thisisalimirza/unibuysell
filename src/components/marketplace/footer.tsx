@@ -1,55 +1,60 @@
 import Link from "next/link";
-import { ShieldCheck, MapPin } from "lucide-react";
+import { ShieldCheck, MapPin, ArrowRight } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-white/70">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2 font-semibold text-primary">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
+    <footer className="border-t border-slate-100 bg-slate-900 text-slate-400">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-xs font-bold text-white">
                 UB
               </span>
-              UniBuySell
+              <span className="font-bold text-white">UniBuySell</span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-slate-500">
-              A closed marketplace for verified college and medical school students.
+            <p className="mt-3 text-sm leading-6">
+              A verified-only marketplace for college and medical school students.
+              No fake accounts, no public providers.
             </p>
+            <Link
+              href="/auth/sign-up"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors"
+            >
+              Join free <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
 
+          {/* Marketplace */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">Marketplace</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-500">
-              <li>
-                <Link href="/listings" className="hover:text-primary">
-                  Browse listings
-                </Link>
-              </li>
-              <li>
-                <Link href="/listings/new" className="hover:text-primary">
-                  Post a listing
-                </Link>
-              </li>
-              <li>
-                <Link href="/chats" className="hover:text-primary">
-                  My messages
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard" className="hover:text-primary">
-                  Dashboard
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold text-white">Marketplace</h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {[
+                { href: "/listings", label: "Browse listings" },
+                { href: "/listings/new", label: "Post a listing" },
+                { href: "/chats", label: "Messages" },
+                { href: "/dashboard", label: "Dashboard" }
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Categories */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">Categories</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-500">
+            <h3 className="text-sm font-semibold text-white">Categories</h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
               {["Textbooks", "Medical Gear", "Electronics", "Subleases"].map((cat) => (
                 <li key={cat}>
-                  <Link href={`/listings?category=${encodeURIComponent(cat)}`} className="hover:text-primary">
+                  <Link
+                    href={`/listings?category=${encodeURIComponent(cat)}`}
+                    className="hover:text-white transition-colors"
+                  >
                     {cat}
                   </Link>
                 </li>
@@ -57,20 +62,21 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Safety */}
           <div>
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              Safe meeting tips
+            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-white">
+              <ShieldCheck className="h-4 w-4 text-emerald-400" />
+              Safe meeting zones
             </h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-500">
+            <ul className="mt-4 space-y-2.5 text-sm">
               {[
-                "Student Union exchange table",
-                "Library lobby or front desk",
+                "Student Union",
+                "Library lobby",
                 "Residence hall front desk",
-                "Campus Police parking lot",
+                "Campus Police lot"
               ].map((zone) => (
                 <li key={zone} className="flex items-start gap-1.5">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 flex-none text-emerald-600" />
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 flex-none text-emerald-500" />
                   {zone}
                 </li>
               ))}
@@ -78,8 +84,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-200 pt-6 text-center text-xs text-slate-400">
-          © {new Date().getFullYear()} UniBuySell · Verified student marketplace · Emails never shared
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs sm:flex-row">
+          <p>© {new Date().getFullYear()} UniBuySell · Verified student marketplace</p>
+          <p className="flex items-center gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+            Personal emails are never shared or displayed publicly
+          </p>
         </div>
       </div>
     </footer>

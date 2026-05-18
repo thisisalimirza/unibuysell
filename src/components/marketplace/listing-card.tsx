@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2, Star } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import type { Listing, PublicProfile } from "@/types/database";
 
@@ -12,48 +10,67 @@ type ListingCardProps = {
   seller?: PublicProfile | null;
 };
 
+const statusStyles: Record<string, string> = {
+  available: "bg-emerald-500 text-white",
+  pending: "bg-amber-500 text-white",
+  sold: "bg-slate-400 text-white"
+};
+
 export function ListingCard({ listing, seller }: ListingCardProps) {
   const image = listing.images[0] ?? "/listing-placeholders/default.svg";
+  const isSold = listing.status === "sold";
 
   return (
     <Link href={`/listings/${listing.id}`} className="group block">
-      <Card className="h-full overflow-hidden transition hover:-translate-y-1 hover:shadow-lg">
-        <div className="relative aspect-[4/3] bg-slate-100">
+      <div className={`overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/[0.05] transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${isSold ? "opacity-70" : ""}`}>
+        {/* Image */}
+        <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
           <Image
             src={image}
             alt={listing.title}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
-          <Badge className="absolute left-3 top-3 capitalize" variant="secondary">
-            {listing.status}
-          </Badge>
-        </div>
-        <CardContent className="space-y-3 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="line-clamp-2 font-semibold text-slate-950">{listing.title}</h3>
-              <p className="mt-1 text-sm text-slate-500">
-                {listing.category} · {listing.condition}
-              </p>
-            </div>
-            <p className="font-bold text-primary">{formatCurrency(listing.price)}</p>
+          {/* Price chip */}
+          <div className="absolute bottom-3 left-3">
+            <span className="rounded-full bg-white/95 px-2.5 py-1 text-sm font-bold text-violet-700 shadow-sm backdrop-blur-sm">
+              {formatCurrency(listing.price)}
+            </span>
           </div>
-          {seller ? (
-            <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
-              <span className="inline-flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                {seller.university_name}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                {seller.rating.toFixed(1)} ({seller.review_count})
+          {/* Status chip */}
+          {listing.status !== "available" ? (
+            <div className="absolute right-3 top-3">
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize ${statusStyles[listing.status] ?? statusStyles.sold}`}>
+                {listing.status}
               </span>
             </div>
           ) : null}
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          <h3 className="line-clamp-2 font-semibold text-slate-900 leading-snug group-hover:text-violet-700 transition-colors">
+            {listing.title}
+          </h3>
+          <p className="mt-1 text-xs font-medium text-slate-400 uppercase tracking-wide">
+            {listing.category} · {listing.condition}
+          </p>
+
+          {seller ? (
+            <div className="mt-3 flex items-center justify-between border-t border-slate-50 pt-3">
+              <span className="inline-flex items-center gap-1 text-xs text-emerald-700 font-medium">
+                <CheckCircle2 className="h-3 w-3" />
+                {seller.university_name}
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs text-amber-600 font-semibold">
+                <Star className="h-3 w-3 fill-current" />
+                {seller.rating.toFixed(1)}
+              </span>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </Link>
   );
 }

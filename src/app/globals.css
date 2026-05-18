@@ -1,21 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f9f9fc;
+  --foreground: #0d0d14;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --muted: #e2e8f0;
-  --muted-foreground: #64748b;
-  --border: #cbd5e1;
-  --primary: #123c69;
+  --card-foreground: #0d0d14;
+  --muted: #f0f0f7;
+  --muted-foreground: #6b7180;
+  --border: #e8e8f0;
+  --primary: #7c3aed;
+  --primary-light: #8b5cf6;
+  --primary-dark: #6d28d9;
   --primary-foreground: #ffffff;
-  --accent: #10b981;
-  --accent-foreground: #052e1a;
-  --destructive: #dc2626;
+  --accent: #f59e0b;
+  --accent-foreground: #451a03;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --ring: #2563eb;
-  --radius: 0.9rem;
+  --ring: #a78bfa;
+  --radius: 0.75rem;
+
+  /* Extended palette */
+  --verified: #059669;
+  --verified-light: #ecfdf5;
+  --verified-border: #a7f3d0;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --warning-border: #fcd34d;
 }
 
 @theme inline {
@@ -42,12 +52,26 @@
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 32rem),
-    linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
+  background-color: var(--background);
   color: var(--foreground);
 }
 
 a {
-  text-underline-offset: 4px;
+  text-underline-offset: 3px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }

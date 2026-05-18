@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, SlidersHorizontal } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { ListingCard } from "@/components/marketplace/listing-card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,13 @@ import type { Listing, ListingCategory, PublicProfile } from "@/types/database";
 
 type SortOption = "newest" | "price_asc" | "price_desc";
 
+const categoryIcons: Record<string, string> = {
+  Textbooks: "📚",
+  "Medical Gear": "🩺",
+  Electronics: "💻",
+  Subleases: "🏠"
+};
+
 export default async function ListingsPage({
   searchParams
 }: {
@@ -20,25 +27,20 @@ export default async function ListingsPage({
     category?: ListingCategory;
     q?: string;
     sort?: SortOption;
-    status?: "available" | "all";
   }>;
 }) {
   await requireConfirmedUser();
   const params = await searchParams;
   const sort: SortOption = params.sort ?? "newest";
-  const showAll = params.status === "all";
   let listings: Listing[] = [];
   let sellerMap = new Map<string, PublicProfile>();
   let errorMessage: string | null = null;
 
   if (!hasSupabaseEnv()) {
     listings = demoListings
-      .filter((listing) => showAll || listing.status !== "sold")
-      .filter((listing) => !params.category || listing.category === params.category)
-      .filter(
-        (listing) =>
-          !params.q || listing.title.toLowerCase().includes(params.q.toLowerCase().trim())
-      );
+      .filter((l) => l.status !== "sold")
+      .filter((l) => !params.category || l.category === params.category)
+      .filter((l) => !params.q || l.title.toLowerCase().includes(params.q.toLowerCase().trim()));
 
     if (sort === "price_asc") listings = [...listings].sort((a, b) => a.price - b.price);
     else if (sort === "price_desc") listings = [...listings].sort((a, b) => b.price - a.price);
@@ -46,151 +48,152 @@ export default async function ListingsPage({
     sellerMap = getDemoPublicProfileMap();
   } else {
     const supabase = await createClient();
-    let query = supabase.from("listings").select("*");
-
-    if (!showAll) {
-      query = query.neq("status", "sold");
-    }
+    let query = supabase.from("listings").select("*").neq("status", "sold");
 
     if (params.category && listingCategories.includes(params.category)) {
       query = query.eq("category", params.category);
     }
-
     if (params.q) {
       query = query.ilike("title", `%${params.q}%`);
     }
-
-    if (sort === "price_asc") {
-      query = query.order("price", { ascending: true });
-    } else if (sort === "price_desc") {
-      query = query.order("price", { ascending: false });
-    } else {
-      query = query.order("created_at", { ascending: false });
-    }
+    if (sort === "price_asc") query = query.order("price", { ascending: true });
+    else if (sort === "price_desc") query = query.order("price", { ascending: false });
+    else query = query.order("created_at", { ascending: false });
 
     const { data, error } = await query;
     listings = data ?? [];
     errorMessage = error?.message ?? null;
-    const sellerIds = Array.from(new Set(listings.map((listing) => listing.seller_id)));
+
+    const sellerIds = Array.from(new Set(listings.map((l) => l.seller_id)));
     const { data: sellers } = sellerIds.length
       ? await supabase.from("public_profiles").select("*").in("id", sellerIds)
       : { data: [] as PublicProfile[] };
-    sellerMap = new Map((sellers ?? []).map((seller) => [seller.id, seller]));
+    sellerMap = new Map((sellers ?? []).map((s) => [s.id, s]));
   }
-
-  const categoryCount = listingCategories.reduce(
-    (acc, cat) => {
-      acc[cat] = listings.filter((l) => l.category === cat).length;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Header */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950">Verified listings</h1>
-          <p className="mt-2 max-w-2xl text-slate-600">
-            Browse campus-vetted offers from confirmed students. Contact sellers through private
-            marketplace chat.
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+            Verified listings
+          </h1>
+          <p className="mt-1.5 text-slate-500">
+            {listings.length > 0
+              ? `${listings.length} item${listings.length !== 1 ? "s" : ""} from confirmed students`
+              : "From confirmed university students — contact via private chat"}
           </p>
         </div>
         <Button asChild>
           <Link href="/listings/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Create listing
+            <Plus className="h-4 w-4" />
+            Post listing
           </Link>
         </Button>
       </div>
 
-      <form className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="grid gap-3 md:grid-cols-[1fr_180px_160px_auto]">
-          <input
-            name="q"
-            defaultValue={params.q}
-            placeholder="Search textbooks, gear, electronics..."
-            className="h-11 rounded-xl border border-slate-300 px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          />
-          <select
+      {/* Category pills */}
+      <div className="mt-6 flex flex-wrap gap-2">
+        <form>
+          <button
+            type="submit"
             name="category"
-            defaultValue={params.category ?? ""}
-            className="h-11 rounded-xl border border-slate-300 px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            value=""
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
+              !params.category
+                ? "bg-violet-600 text-white shadow-sm"
+                : "bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-violet-300 hover:text-violet-700"
+            }`}
           >
-            <option value="">All categories</option>
-            {listingCategories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <select
-            name="sort"
-            defaultValue={sort}
-            className="h-11 rounded-xl border border-slate-300 px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          >
-            <option value="newest">Newest first</option>
-            <option value="price_asc">Price: low to high</option>
-            <option value="price_desc">Price: high to low</option>
-          </select>
-          <Button type="submit">
-            <SlidersHorizontal className="mr-2 h-4 w-4" />
-            Filter
-          </Button>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          {listingCategories.map((cat) => {
-            const active = params.category === cat;
-            return (
+            All
+          </button>
+        </form>
+        {listingCategories.map((cat) => {
+          const active = params.category === cat;
+          return (
+            <form key={cat}>
               <button
-                key={cat}
                 type="submit"
                 name="category"
                 value={active ? "" : cat}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
                   active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-primary/50 hover:text-primary"
+                    ? "bg-violet-600 text-white shadow-sm"
+                    : "bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-violet-300 hover:text-violet-700"
                 }`}
               >
-                {cat} {categoryCount[cat] ? `(${categoryCount[cat]})` : ""}
+                {categoryIcons[cat]} {cat}
               </button>
-            );
-          })}
-        </div>
-      </form>
-
-      {errorMessage ? (
-        <Card className="mt-8">
-          <CardContent className="p-6 text-red-700">{errorMessage}</CardContent>
-        </Card>
-      ) : null}
-
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {listings.map((listing) => (
-          <ListingCard
-            key={listing.id}
-            listing={listing}
-            seller={sellerMap.get(listing.seller_id)}
-          />
-        ))}
+            </form>
+          );
+        })}
       </div>
 
-      {!listings.length && !errorMessage ? (
-        <Card className="mt-8">
-          <CardContent className="p-8 text-center text-slate-600">
-            {params.q || params.category
-              ? "No listings match your search. Try a different filter or category."
-              : "No listings yet. Be the first verified student to post one."}
-          </CardContent>
+      {/* Search + sort */}
+      <form className="mt-4 flex flex-col gap-3 sm:flex-row">
+        {params.category ? (
+          <input type="hidden" name="category" value={params.category} />
+        ) : null}
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            name="q"
+            defaultValue={params.q}
+            placeholder="Search listings…"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm shadow-sm transition focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-violet-300"
+          />
+        </div>
+        <select
+          name="sort"
+          defaultValue={sort}
+          className="h-10 rounded-xl border border-slate-200 bg-white px-3.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+        >
+          <option value="newest">Newest first</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option>
+        </select>
+        <Button type="submit" variant="outline">Filter</Button>
+      </form>
+
+      {/* Error */}
+      {errorMessage ? (
+        <Card className="mt-6">
+          <CardContent className="p-5 text-sm text-red-700">{errorMessage}</CardContent>
         </Card>
       ) : null}
 
+      {/* Grid */}
       {listings.length > 0 ? (
-        <p className="mt-6 text-center text-sm text-slate-400">
-          {listings.length} listing{listings.length !== 1 ? "s" : ""} shown
-        </p>
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {listings.map((listing) => (
+            <ListingCard
+              key={listing.id}
+              listing={listing}
+              seller={sellerMap.get(listing.seller_id)}
+            />
+          ))}
+        </div>
+      ) : !errorMessage ? (
+        <div className="mt-12 flex flex-col items-center gap-4 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-3xl">
+            {params.category ? categoryIcons[params.category] ?? "🔍" : "🔍"}
+          </div>
+          <div>
+            <p className="font-bold text-slate-800">No listings found</p>
+            <p className="mt-1 text-sm text-slate-500">
+              {params.q || params.category
+                ? "Try a different search or category."
+                : "Be the first to post something."}
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/listings/new">
+              <Plus className="h-4 w-4" />
+              Create listing
+            </Link>
+          </Button>
+        </div>
       ) : null}
     </main>
   );

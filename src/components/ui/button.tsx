@@ -5,24 +5,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-sm hover:bg-[#0d2d50]",
+        default:
+          "rounded-xl bg-violet-600 text-white shadow-md shadow-violet-200 hover:bg-violet-500 hover:shadow-lg hover:shadow-violet-200",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-red-700",
+          "rounded-xl bg-red-500 text-white shadow-sm hover:bg-red-600",
         outline:
-          "border border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50",
-        secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200",
-        ghost: "text-slate-700 hover:bg-slate-100 hover:text-primary",
-        link: "text-primary underline-offset-4 hover:underline"
+          "rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300",
+        secondary:
+          "rounded-xl bg-slate-100 text-slate-800 hover:bg-slate-200",
+        ghost:
+          "rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+        link:
+          "rounded-none text-violet-600 underline-offset-4 hover:underline"
       },
       size: {
-        default: "h-11 px-5 py-2",
-        sm: "h-9 rounded-lg px-3",
-        lg: "h-12 rounded-2xl px-8",
-        icon: "h-10 w-10"
+        default: "h-10 px-5 py-2",
+        sm: "h-8 rounded-lg px-3 text-xs",
+        lg: "h-12 rounded-2xl px-8 text-base",
+        icon: "h-10 w-10 rounded-xl"
       }
     },
     defaultVariants: {

@@ -43,63 +43,70 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}>
-        <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-xs font-bold text-white shadow-md shadow-violet-200 transition group-hover:bg-violet-500">
                 UB
               </span>
-              <span>UniBuySell</span>
+              <span className="hidden font-bold text-slate-900 sm:block">
+                Uni<span className="text-violet-600">BuySell</span>
+              </span>
             </Link>
 
-            <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-1 md:flex">
               {showInternalNav ? (
                 <>
-                  <Link href="/dashboard" className="hover:text-primary">
-                    Dashboard
-                  </Link>
-                  <Link href="/listings" className="hover:text-primary">
-                    Listings
-                  </Link>
-                  <Link href="/chats" className="hover:text-primary">
-                    Messages
-                  </Link>
-                  <Link href={`/profile/${user?.id}`} className="hover:text-primary">
-                    My Profile
-                  </Link>
+                  {[
+                    { href: "/dashboard", label: "Dashboard" },
+                    { href: "/listings", label: "Listings" },
+                    { href: "/chats", label: "Messages" },
+                    { href: `/profile/${user?.id}`, label: "My Profile" }
+                  ].map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </>
               ) : (
                 <>
-                  <Link href="/#trust" className="hover:text-primary">
+                  <Link href="/#trust" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                     Trust
                   </Link>
-                  <Link href="/#safety" className="hover:text-primary">
+                  <Link href="/#safety" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                     Safety
                   </Link>
                 </>
               )}
             </nav>
 
+            {/* Right side */}
             <div className="flex items-center gap-2">
               {showInternalNav ? (
                 demoMode ? (
-                  <Button asChild variant="outline" size="sm" className="hidden md:flex">
-                    <Link href="/dashboard">Demo mode</Link>
-                  </Button>
+                  <span className="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 md:inline-flex">
+                    Demo mode
+                  </span>
                 ) : (
                   <form action={signOutAction} className="hidden md:block">
-                    <Button variant="outline" size="sm" type="submit">
+                    <Button variant="ghost" size="sm" type="submit">
                       Sign out
                     </Button>
                   </form>
                 )
               ) : (
                 <>
-                  <Button asChild variant="ghost" size="sm" className="hidden md:flex">
+                  <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
                     <Link href="/auth/sign-in">Sign in</Link>
                   </Button>
-                  <Button asChild size="sm" className="hidden md:flex">
-                    <Link href="/auth/sign-up">Join verified</Link>
+                  <Button asChild size="sm" className="hidden md:inline-flex">
+                    <Link href="/auth/sign-up">Join free</Link>
                   </Button>
                 </>
               )}
