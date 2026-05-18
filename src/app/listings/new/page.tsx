@@ -10,7 +10,7 @@ export default async function NewListingPage() {
     <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
-          <CardTitle>Create a verified marketplace listing</CardTitle>
+          <CardTitle>List your thing — takes about 2 minutes</CardTitle>
         </CardHeader>
         <CardContent>
           <ListingForm action={createListingAction} />

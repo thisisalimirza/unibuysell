@@ -40,7 +40,7 @@ export default async function EditListingPage({
     <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
-          <CardTitle>Edit listing</CardTitle>
+          <CardTitle>Update your listing</CardTitle>
         </CardHeader>
         <CardContent>
           <ListingForm listing={listing} action={action} />

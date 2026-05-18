@@ -1,13 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-label="Listing placeholder">
   <defs>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop stop-color="#123c69"/>
-      <stop offset="1" stop-color="#10b981"/>
+      <stop stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#7c3aed"/>
     </linearGradient>
   </defs>
-  <rect width="960" height="720" fill="#e2e8f0"/>
-  <rect x="120" y="120" width="720" height="480" rx="48" fill="url(#g)" opacity="0.92"/>
-  <circle cx="342" cy="300" r="72" fill="#ffffff" opacity="0.9"/>
-  <path d="M220 510 410 378l116 92 80-68 134 108H220Z" fill="#ffffff" opacity="0.92"/>
-  <text x="480" y="628" fill="#0f172a" font-family="Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle">UniBuySell</text>
+  <rect width="960" height="720" fill="#f5f3ff"/>
+  <rect x="80" y="80" width="800" height="560" rx="48" fill="url(#g)" opacity="0.12"/>
+  <circle cx="480" cy="300" r="120" fill="url(#g2)" opacity="0.18"/>
+  <path d="M200 480 380 340l140 110 100-80 140 110H200Z" fill="url(#g)" opacity="0.15"/>
+  <!-- Camera icon -->
+  <rect x="400" y="252" width="160" height="120" rx="16" fill="url(#g)" opacity="0.3"/>
+  <circle cx="480" cy="316" r="32" fill="url(#g2)" opacity="0.5"/>
+  <circle cx="480" cy="316" r="18" fill="white" opacity="0.7"/>
+  <rect x="424" y="260" width="28" height="16" rx="8" fill="url(#g)" opacity="0.4"/>
+  <text x="480" y="430" fill="#7c3aed" font-family="system-ui, sans-serif" font-size="22" font-weight="700" text-anchor="middle" opacity="0.5">No photo yet</text>
 </svg>

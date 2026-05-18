@@ -1,7 +1,8 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Error({
   error,
@@ -11,16 +12,17 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-2xl items-center px-4 py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Something went wrong</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-slate-600">{error.message}</p>
+    <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-16">
+      <div className="text-center">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-50">
+          <AlertTriangle className="h-10 w-10 text-red-400" />
+        </div>
+        <h1 className="text-2xl font-extrabold text-slate-900">Something went wrong</h1>
+        <p className="mt-3 max-w-sm text-slate-500">{error.message}</p>
+        <div className="mt-8">
           <Button onClick={reset}>Try again</Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </main>
   );
 }

@@ -1,28 +1,36 @@
 import Link from "next/link";
-import { MessageSquareLock } from "lucide-react";
+import { MessageSquare, Plus, ShoppingBag } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { requireConfirmedUser } from "@/lib/auth";
 import {
+  demoMessages,
   getDemoListingMap,
   getDemoPublicProfileMap,
   getDemoRoomsForUser
 } from "@/lib/demo-data";
 import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
-import type { ChatRoom, Listing, PublicProfile } from "@/types/database";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import type { ChatRoom, Listing, Message, PublicProfile } from "@/types/database";
 
 export default async function ChatsPage() {
   const user = await requireConfirmedUser();
   let rooms: ChatRoom[] = [];
   let listingMap = new Map<string, Listing>();
   let profileMap = new Map<string, PublicProfile>();
+  let lastMessages = new Map<string, Message>();
 
   if (!hasSupabaseEnv()) {
     rooms = getDemoRoomsForUser(user.id);
     listingMap = getDemoListingMap();
     profileMap = getDemoPublicProfileMap();
+    rooms.forEach((room) => {
+      const msgs = demoMessages.filter((m) => m.chat_room_id === room.id);
+      const last = msgs.at(-1);
+      if (last) lastMessages.set(room.id, last);
+    });
   } else {
     const supabase = await createClient();
     const { data: roomData } = await supabase
@@ -32,9 +40,9 @@ export default async function ChatsPage() {
       .order("created_at", { ascending: false });
     rooms = roomData ?? [];
 
-    const listingIds = Array.from(new Set(rooms.map((room) => room.listing_id)));
+    const listingIds = Array.from(new Set(rooms.map((r) => r.listing_id)));
     const participantIds = Array.from(
-      new Set(rooms.flatMap((room) => [room.buyer_id, room.seller_id]))
+      new Set(rooms.flatMap((r) => [r.buyer_id, r.seller_id]))
     );
 
     const [{ data: listings }, { data: profiles }] = await Promise.all([
@@ -46,57 +54,116 @@ export default async function ChatsPage() {
         : Promise.resolve({ data: [] as PublicProfile[] })
     ]);
 
-    listingMap = new Map((listings ?? []).map((listing) => [listing.id, listing]));
-    profileMap = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+    listingMap = new Map((listings ?? []).map((l) => [l.id, l]));
+    profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+
+    if (rooms.length > 0) {
+      const { data: msgData } = await supabase
+        .from("messages")
+        .select("*")
+        .in("chat_room_id", rooms.map((r) => r.id))
+        .order("created_at", { ascending: false });
+
+      (msgData ?? []).forEach((msg) => {
+        if (!lastMessages.has(msg.chat_room_id)) {
+          lastMessages.set(msg.chat_room_id, msg);
+        }
+      });
+    }
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <Badge variant="verified" className="mb-3">
-          <MessageSquareLock className="mr-1 h-3.5 w-3.5" />
-          Private marketplace chat
-        </Badge>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-950">Messages</h1>
-        <p className="mt-2 text-slate-600">
-          Negotiate safely with verified buyers and sellers without exposing personal contact info.
-        </p>
+    <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Your chats</h1>
+          <p className="mt-1.5 text-slate-500">
+            {rooms.length > 0
+              ? `${rooms.length} conversation${rooms.length !== 1 ? "s" : ""} going`
+              : "All private. Your email is never shared with anyone."}
+          </p>
+        </div>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/listings">
+            <Plus className="h-4 w-4" />
+            Find listing
+          </Link>
+        </Button>
       </div>
 
-      <div className="space-y-4">
-        {rooms.map((room) => {
-          const listing = listingMap.get(room.listing_id);
-          const otherId = room.buyer_id === user.id ? room.seller_id : room.buyer_id;
-          const other = profileMap.get(otherId);
+      {/* Rooms list */}
+      {rooms.length > 0 ? (
+        <div className="space-y-3">
+          {rooms.map((room) => {
+            const listing = listingMap.get(room.listing_id);
+            const otherId = room.buyer_id === user.id ? room.seller_id : room.buyer_id;
+            const other = profileMap.get(otherId);
+            const lastMsg = lastMessages.get(room.id);
+            const isSold = listing?.status === "sold";
 
-          return (
-            <Link key={room.id} href={`/chats/${room.id}`} className="block">
-              <Card className="transition hover:border-primary/30 hover:shadow-md">
-                <CardHeader>
-                  <CardTitle className="flex flex-col justify-between gap-2 text-lg sm:flex-row">
-                    <span>{listing?.title ?? "Marketplace chat"}</span>
-                    <Badge variant={listing?.status === "sold" ? "warning" : "secondary"}>
-                      {listing?.status ?? "active"}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-slate-600">
-                  With {other?.full_name ?? "Verified participant"} ·{" "}
-                  {other?.university_name ?? "Verified institution"}
-                </CardContent>
-              </Card>
+            return (
+              <Link key={room.id} href={`/chats/${room.id}`} className="group block">
+                <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/[0.05] transition-all hover:shadow-md hover:-translate-y-0.5">
+                  {/* Avatar */}
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-sm font-bold text-violet-700">
+                    {other?.full_name?.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase() ?? "?"}
+                  </div>
+
+                  {/* Content */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="truncate font-semibold text-slate-900 group-hover:text-violet-700 transition-colors">
+                        {listing?.title ?? "Marketplace chat"}
+                      </p>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <Badge variant={isSold ? "warning" : "secondary"} className="capitalize">
+                          {listing?.status ?? "active"}
+                        </Badge>
+                        {listing ? (
+                          <span className="text-xs font-bold text-violet-600">
+                            {formatCurrency(listing.price)}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                    <p className="mt-0.5 text-sm text-slate-500">
+                      {room.seller_id === user.id ? "Buyer" : "Seller"}: {other?.full_name ?? "Verified student"} · {other?.university_name ?? "Verified institution"}
+                    </p>
+                    {lastMsg ? (
+                      <p className="mt-1 truncate text-xs text-slate-400">
+                        {lastMsg.sender_id === user.id ? "You: " : ""}
+                        {lastMsg.text.slice(0, 70)}{lastMsg.text.length > 70 ? "…" : ""}
+                        {" · "}{formatDate(lastMsg.created_at)}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-xs italic text-slate-400">Say hi first 👋</p>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-5 rounded-2xl border-2 border-dashed border-slate-200 bg-white py-16 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50">
+            <MessageSquare className="h-8 w-8 text-violet-400" />
+          </div>
+          <div>
+            <p className="font-bold text-slate-800">No chats yet</p>
+            <p className="mt-1.5 text-sm text-slate-500">
+              See something you want? Hit "Message them" on the listing and you&apos;re in.
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/listings">
+              <ShoppingBag className="h-4 w-4" />
+              Browse listings
             </Link>
-          );
-        })}
-      </div>
-
-      {!rooms.length ? (
-        <Card>
-          <CardContent className="p-8 text-center text-slate-600">
-            No secure chats yet. Start from a listing to contact a seller.
-          </CardContent>
-        </Card>
-      ) : null}
+          </Button>
+        </div>
+      )}
     </main>
   );
 }
