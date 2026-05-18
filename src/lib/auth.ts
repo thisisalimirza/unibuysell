@@ -33,10 +33,18 @@ export function isInstitutionalEmail(email: string) {
   }
 
   return (
-    domain.endsWith(".edu") ||
-    domain.endsWith("mail.edu") ||
-    domain.endsWith(".edu.get") ||
-    domain.endsWith("edu.get")
+    domain.endsWith(".edu") ||         // US universities (harvard.edu, mit.edu)
+    domain.endsWith(".ac.uk") ||       // UK universities (ox.ac.uk, cam.ac.uk)
+    domain.endsWith(".edu.au") ||      // Australian universities (uq.edu.au)
+    domain.endsWith(".ac.nz") ||       // New Zealand universities
+    domain.endsWith(".ac.za") ||       // South African universities
+    domain.endsWith(".edu.sg") ||      // Singapore universities
+    domain.endsWith(".edu.hk") ||      // Hong Kong universities
+    domain.endsWith(".ac.in") ||       // Indian universities
+    domain.endsWith(".edu.mx") ||      // Mexican universities
+    domain.endsWith(".edu.br") ||      // Brazilian universities
+    domain.endsWith(".edu.co") ||      // Colombian universities
+    domain.endsWith(".edu.ar")         // Argentine universities
   );
 }
 
@@ -45,15 +53,15 @@ export function getInstitutionalEmailError(email: string) {
     return null;
   }
 
-  return "Use a valid university or medical school email. Public email providers are not accepted.";
+  return "Use a valid university or medical school email (.edu, .ac.uk, .edu.au, etc.). Public email providers are not accepted.";
 }
 
 export function deriveUniversityName(domain: string) {
   const cleaned = domain
-    .replace(/\.edu\.get$/, "")
+    .replace(/\.(edu|ac)\.(uk|au|nz|za|sg|hk|in|mx|br|co|ar)$/, "")
     .replace(/\.edu$/, "")
     .split(".")
-    .filter((part) => !["mail", "student", "students", "email"].includes(part))
+    .filter((part) => !["mail", "student", "students", "email", "ac", "my"].includes(part))
     .at(-1);
 
   if (!cleaned) {
